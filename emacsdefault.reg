@@ -1,0 +1,8 @@
+Windows Registry Editor Version 5.00
+;
+;  Anything defined as a "txtfile" is opened with Emacs.
+;
+[HKEY_CLASSES_ROOT\txtfile\shell]
+[HKEY_CLASSES_ROOT\txtfile\shell\open]
+[HKEY_CLASSES_ROOT\txtfile\shell\open\command]
+@="\"C:\\Program Files\\emacs-24.3\\bin\\emacsclientw.exe\" -n -a \"C:\\Program Files\\emacs-24.3\\bin\\emacs.exe\" \"%1\""
