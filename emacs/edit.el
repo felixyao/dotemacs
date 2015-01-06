@@ -41,3 +41,7 @@ point reaches the beginning or end of the buffer, stop there."
 
 ;; try to using ido complete the filename
 (setq ido-use-filename-at-point 'guess)
+
+;; Suit for Nodic layout 
+(define-key my-emacs-prefix-keymap (kbd "e") 'end-of-buffer)
+(define-key my-emacs-prefix-keymap (kbd "a") 'beginning-of-buffer)
