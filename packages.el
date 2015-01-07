@@ -20,7 +20,7 @@
 (setq url-configuration-directory (expand-file-name "url" my-emacs-auto-generate))
 
 ;; Packages I like
-(defvar my-packages '(desktop magit paredit smex))
+(defvar my-packages '(desktop magit paredit smex autopair))
 
 (defun my-packages-installed-p ()
   (loop for p in my-packages

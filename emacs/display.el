@@ -14,8 +14,8 @@
 ;; Font size
 (global-set-key (kbd "C-+") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
-
-
+;; show matched parent
+(show-paren-mode t)
 ;;Set fullscreen
 (defun my-emacs-fullscreen ()
   "Make Emacs window fullscreen.

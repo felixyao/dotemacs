@@ -39,9 +39,13 @@ point reaches the beginning or end of the buffer, stop there."
 ;; enable cua rectangle mode
 (cua-selection-mode t)
 
+;;auto parect 
+(require 'autopair)
+(autopair-global-mode)
+
 ;; try to using ido complete the filename
 (setq ido-use-filename-at-point 'guess)
 
 ;; Suit for Nodic layout 
-(define-key my-emacs-prefix-keymap (kbd "e") 'end-of-buffer)
+(define-key my-emacs-prefix-keymap (kbd "n") 'end-of-buffer)
 (define-key my-emacs-prefix-keymap (kbd "a") 'beginning-of-buffer)

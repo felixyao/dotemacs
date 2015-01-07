@@ -21,4 +21,7 @@
 (load "~/.emacs.d/emacs/bookmark")
 (load "~/.emacs.d/modes/shell")
 (load "~/.emacs.d/modes/magit")
+(load "~/.emacs.d/modes/org")
+(load "~/.emacs.d/modes/sexp")
+
 (load custom-file)
