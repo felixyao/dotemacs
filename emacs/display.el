@@ -16,6 +16,8 @@
 (global-set-key (kbd "C--") 'text-scale-decrease)
 ;; show matched parent
 (show-paren-mode t)
+
+(set-face-attribute 'default nil :height 180)
 ;;Set fullscreen
 (defun my-emacs-fullscreen ()
   "Make Emacs window fullscreen.
