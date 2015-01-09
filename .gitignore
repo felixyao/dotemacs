@@ -8,3 +8,5 @@
 /server/
 /org-clock-save.el
 /.emacs.desktop
+\#*\#
+/ido.last
