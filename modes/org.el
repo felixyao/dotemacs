@@ -33,6 +33,15 @@
 	("MEETING" :foreground "forest green" :weight bold)
 	("PHONE" :foreground "forest green" :weight bold)))
 
+(setq org-todo-state-tags-triggers
+      '(("CANCELLED" ("CANCELLED" . t))
+	("WAITING" ("WAITING" . t))
+	("HOLD" ("WAITING") ("HOLD" . t))
+	(done ("WAITING") ("HOLD"))
+	("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+	("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
+	("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
+
 (setq org-use-fast-todo-selection t)
 (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 
