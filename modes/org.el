@@ -364,7 +364,7 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
           (setq parent-task (point))))
       (goto-char parent-task)
       parent-task)))
-
+(setq org-agenda-tags-todo-honor-ignore-options t)
 ;; Custom agenda command definitions
 (setq org-agenda-custom-commands
       '(("N" "Notes" tags "NOTE"
