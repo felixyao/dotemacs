@@ -16,7 +16,7 @@
 (global-set-key "\C-cb" 'org-iswitchb)
 
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d)")
+      '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d@)")
 	(sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE" "MEETING")))
 
 (setq org-todo-keyword-faces
@@ -29,18 +29,10 @@
 	("MEETING" :foreground "forest green" :weight bold)
 	("PHONE" :foreground "forest green" :weight bold)))
 
-(setq org-todo-state-tags-triggers
-      '(("CANCELLED" ("CANCELLED" . t))
-	("WAITING" ("WAITING" . t))
-	("HOLD" ("WAITING") ("HOLD" . t))
-	(done ("WAITING") ("HOLD"))
-	("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-	("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-	("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
-
 (setq org-use-fast-todo-selection t)
 (setq org-treat-S-cursor-todo-selection-as-state-change nil)
 
+
 (setq org-todo-state-tags-triggers
       '(("CANCELLED" ("CANCELLED" . t))
 	("WAITING" ("WAITING" . t))
@@ -49,6 +41,7 @@
 	("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
 	("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
 	("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
+
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings
 (setq org-capture-templates
@@ -138,6 +131,12 @@ Callers of this function already widen the buffer view."
           nil
         t))))
 
+(defun bh/is-root-project-p ()
+  "Any project is not in a project subtree"
+  (save-excursion
+    (widen)
+    (and (bh/is-project-p) (not (bh/is-project-subtree-p)))))
+
 (defun bh/is-task-p ()
   "Any task with a todo keyword and no subtask"
   (save-restriction
@@ -154,59 +153,90 @@ Callers of this function already widen the buffer view."
             (setq has-subtask t))))
       (and is-a-task (not has-subtask)))))
 
-(defun bh/is-subproject-p ()
-  "Any task which is a subtask of another project"
-  (let ((is-subproject)
-        (is-a-task (member (nth 2 (org-heading-components)) org-todo-keywords-1)))
-    (save-excursion
-      (while (and (not is-subproject) (org-up-heading-safe))
-        (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
-          (setq is-subproject t))))
-    (and is-a-task is-subproject)))
-
-(defun bh/list-sublevels-for-projects-indented ()
-  "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
-  This is normally used by skipping functions where this variable is already local to the agenda."
-  (if (marker-buffer org-agenda-restrict-begin)
-      (setq org-tags-match-list-sublevels 'indented)
-    (setq org-tags-match-list-sublevels nil))
-  nil)
-
-(defun bh/list-sublevels-for-projects ()
-  "Set org-tags-match-list-sublevels so when restricted to a subtree we list all subtasks.
-  This is normally used by skipping functions where this variable is already local to the agenda."
-  (if (marker-buffer org-agenda-restrict-begin)
-      (setq org-tags-match-list-sublevels t)
-    (setq org-tags-match-list-sublevels nil))
-  nil)
-
-(defvar bh/hide-scheduled-and-waiting-next-tasks t)
-
-(defun bh/toggle-next-task-display ()
-  (interactive)
-  (setq bh/hide-scheduled-and-waiting-next-tasks (not bh/hide-scheduled-and-waiting-next-tasks))
-  (when  (equal major-mode 'org-agenda-mode)
-    (org-agenda-redo))
-  (message "%s WAITING and SCHEDULED NEXT Tasks" (if bh/hide-scheduled-and-waiting-next-tasks "Hide" "Show")))
-(global-set-key "\C-zn" 'bh/toggle-next-task-display)
-
-(defun bh/skip-stuck-projects ()
-  "Skip trees that are not stuck projects"
+(defun bh/skip-projects-tasks-and-habits ()
+  "Skip trees that are projects, tasks that are habits, single non-project tasks"
   (save-restriction
     (widen)
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (if (bh/is-project-p)
-          (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                 (has-next ))
-            (save-excursion
-              (forward-line 1)
-              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
-                (unless (member "WAITING" (org-get-tags-at))
-                  (setq has-next t))))
-            (if has-next
-                nil
-              next-headline)) ; a stuck project, has subtasks but no next task
-        nil))))
+      (cond
+       ((org-is-habit-p)
+        next-headline)
+       ((bh/is-project-subtree-p)
+	next-headline)
+       ((not (bh/is-task-p))
+        next-headline)
+       (t
+        nil)))))
+
+(defun bh/skip-habits-and-projects ()
+  "Skip projects and habits"
+  (save-excursion
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      (cond
+       ((org-is-habit-p)
+	next-headline)
+       ((bh/is-project-p)
+	next-headline)
+       ((not (bh/is-task-p))
+	next-headline)
+       (t
+	nil)))))
+
+
+(defun bh/skip-non-archivable-tasks ()
+  "Skip trees that are not available for archiving"
+  (save-restriction
+    (widen)
+    ;; Consider only tasks with done todo headings as archivable candidates
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
+          (subtree-end (save-excursion (org-end-of-subtree t))))
+      (if (member (org-get-todo-state) org-todo-keywords-1)
+          (if (member (org-get-todo-state) org-done-keywords)
+              (let* ((daynr (string-to-int (format-time-string "%d" (current-time))))
+                     (a-month-ago (* 60 60 24 (+ daynr 1)))
+                     (last-month (format-time-string "%Y-%m-" (time-subtract (current-time) (seconds-to-time a-month-ago))))
+                     (this-month (format-time-string "%Y-%m-" (current-time)))
+                     (subtree-is-current (save-excursion
+                                           (forward-line 1)
+                                           (and (< (point) subtree-end)
+                                                (re-search-forward (concat last-month "\\|" this-month) subtree-end t)))))
+                (if subtree-is-current
+                    subtree-end ; Has a date in this month or last month, skip it
+                  nil))  ; available to archive
+            (or subtree-end (point-max)))
+        next-headline))))
+
+(defun bh/make-week-date-string ()
+  (let* ((today (string-to-int (format-time-string "%w" (current-time))))
+	 (date-list (number-sequence 0 today))
+         (date-string (mapconcat (function (lambda (x)
+			   (let ((date (time-subtract (current-time) (seconds-to-time (* 60 60 24 x)))))
+			     (format-time-string "%Y-%m-%d %a \\|" date))))
+	       date-list
+	       "")))
+    (substring date-string 0 -3)))
+
+(defun bh/skip-non-finished-this-week-tasks ()
+  "Skip trees that are not available for archiving"
+  (save-restriction
+    (widen)
+    ;; Consider only tasks with done todo headings as archivable candidates
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
+          (subtree-end (save-excursion (org-end-of-subtree t))))
+      (if (member (org-get-todo-state) org-todo-keywords-1)
+          (if (member (org-get-todo-state) org-done-keywords)
+              (let ((date-string (bh/make-week-date-string))
+                    (subtree-is-current (save-excursion
+                                           (forward-line 1)
+                                           (and (< (point) subtree-end)
+                                                (re-search-forward
+						  date-string subtree-end t)))))
+                (if subtree-is-current
+                    nil ; Task I have done this week
+                  subtree-end))
+            (or subtree-end (point-max)))
+        next-headline))))
 
 (defun bh/skip-non-stuck-projects ()
   "Skip trees that are not stuck projects"
@@ -215,156 +245,20 @@ Callers of this function already widen the buffer view."
     (widen)
     (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
       (if (bh/is-project-p)
-          (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-                 (has-next ))
-            (save-excursion
-              (forward-line 1)
-              (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
-                (unless (member "WAITING" (org-get-tags-at))
-                  (setq has-next t))))
-            (if has-next
-                next-headline
-              nil)) ; a stuck project, has subtasks but no next task
-        next-headline))))
+	  (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
+		 (has-next ))
+	    (save-excursion
+	      (forward-line 1)
+	      (while (and (not has-next) (< (point) subtree-end) (re-search-forward "^\\*+ NEXT " subtree-end t))
+		(unless (member "WAITING" (org-get-tags-at))
+		  (setq has-next t))))
+	    (if has-next
+		next-headline
+	      nil)) ; a stuck project, has subtasks but no next task
+	next-headline))))
 
-(defun bh/skip-non-projects ()
-  "Skip trees that are not projects"
-  ;; (bh/list-sublevels-for-projects-indented)
-  (if (save-excursion (bh/skip-non-stuck-projects))
-      (save-restriction
-        (widen)
-        (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-          (cond
-           ((bh/is-project-p)
-            nil)
-           ((and (bh/is-project-subtree-p) (not (bh/is-task-p)))
-            nil)
-           (t
-            subtree-end))))
-    (save-excursion (org-end-of-subtree t))))
-
-(defun bh/skip-project-trees-and-habits ()
-  "Skip trees that are projects"
-  (save-restriction
-    (widen)
-    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-      (cond
-       ((bh/is-project-p)
-        subtree-end)
-       ((org-is-habit-p)
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-projects-and-habits-and-single-tasks ()
-  "Skip trees that are projects, tasks that are habits, single non-project tasks"
-  (save-restriction
-    (widen)
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (cond
-       ((org-is-habit-p)
-        next-headline)
-       ((and bh/hide-scheduled-and-waiting-next-tasks
-             (member "WAITING" (org-get-tags-at)))
-        next-headline)
-       ((bh/is-project-p)
-        next-headline)
-       ((and (bh/is-task-p) (not (bh/is-project-subtree-p)))
-        next-headline)
-       (t
-        nil)))))
-
-(defun bh/skip-project-tasks-maybe ()
-  "Show tasks related to the current restriction.
-When restricted to a project, skip project and sub project tasks, habits, NEXT tasks, and loose tasks.
-When not restricted, skip project and sub-project tasks, habits, and project related tasks."
-  (save-restriction
-    (widen)
-    (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-           (next-headline (save-excursion (or (outline-next-heading) (point-max))))
-           (limit-to-project (marker-buffer org-agenda-restrict-begin)))
-      (cond
-       ((bh/is-project-p)
-        next-headline)
-       ((org-is-habit-p)
-        subtree-end)
-       ((and (not limit-to-project)
-             (bh/is-project-subtree-p))
-        subtree-end)
-       ((and limit-to-project
-             (bh/is-project-subtree-p)
-             (member (org-get-todo-state) (list "NEXT")))
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-project-tasks ()
-  "Show non-project tasks.
-Skip project and sub-project tasks, habits, and project related tasks."
-  (save-restriction
-    (widen)
-    (let* ((subtree-end (save-excursion (org-end-of-subtree t))))
-      (cond
-       ((bh/is-project-p)
-        subtree-end)
-       ((org-is-habit-p)
-        subtree-end)
-       ((bh/is-project-subtree-p)
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-non-project-tasks ()
-  "Show project tasks.
-Skip project and sub-project tasks, habits, and loose non-project tasks."
-  (save-restriction
-    (widen)
-    (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
-           (next-headline (save-excursion (or (outline-next-heading) (point-max)))))
-      (cond
-       ((bh/is-project-p)
-        next-headline)
-       ((org-is-habit-p)
-        subtree-end)
-       ((and (bh/is-project-subtree-p)
-             (member (org-get-todo-state) (list "NEXT")))
-        subtree-end)
-       ((not (bh/is-project-subtree-p))
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-projects-and-habits ()
-  "Skip trees that are projects and tasks that are habits"
-  (save-restriction
-    (widen)
-    (let ((subtree-end (save-excursion (org-end-of-subtree t))))
-      (cond
-       ((bh/is-project-p)
-        subtree-end)
-       ((org-is-habit-p)
-        subtree-end)
-       (t
-        nil)))))
-
-(defun bh/skip-non-subprojects ()
-  "Skip trees that are not projects"
-  (let ((next-headline (save-excursion (outline-next-heading))))
-    (if (bh/is-subproject-p)
-        nil
-      next-headline)))
-
-(defun bh/find-project-task ()
-  "Move point to the parent (project) task if any"
-  (save-restriction
-    (widen)
-    (let ((parent-task (save-excursion (org-back-to-heading 'invisible-ok) (point))))
-      (while (org-up-heading-safe)
-        (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
-          (setq parent-task (point))))
-      (goto-char parent-task)
-      parent-task)))
 (setq org-agenda-tags-todo-honor-ignore-options t)
+
 ;; Custom agenda command definitions
 (setq org-agenda-custom-commands
       '(("N" "Notes" tags "NOTE"
@@ -374,70 +268,47 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 	 ((org-agenda-overriding-header "Habits")
 	  (org-agenda-sorting-strategy
 	   '(todo-state-down effort-up category-keep))))
+	("r" "Review"
+	 ((tags "-MEETING-PHONE"
+                ((org-agenda-overriding-header "Done by this week")
+		 (org-agenda-skip-function 'bh/skip-non-finished-this-week-tasks)))
+	 
+	 (tags-todo "WAITING|HOLD-CANCELLED/!"
+	       ((org-agenda-overriding-header "Pending and Postponed tasks")
+		(org-agenda-skip-function 'bh/skip-habits-and-projects)
+		(org-agenda-sorting-strategy
+		       '(category-keep))))
+	 (tags-todo "-CANCELLED/!" 
+	       ((org-agenda-overriding-header "Pending Projects")
+		(org-agenda-skip-function 'bh/skip-non-stuck-projects)
+		(org-agenda-sorting-strategy
+		       '(category-keep))))
+
+	  ))
 	(" " "Agenda"
-	 ((agenda "" nil)
+	 ((agenda "" ((org-agenda-ndays 1)))
 	  (tags "REFILE"
 		((org-agenda-overriding-header "Tasks to Refile")
 		 (org-tags-match-list-sublevels nil)))
-	  (tags-todo "-CANCELLED/!"
-		     ((org-agenda-overriding-header "Stuck Projects")
-		      (org-agenda-skip-function 'bh/skip-non-stuck-projects)
+	  (tags-todo "-CANCELLED-HOLD-WAITING/!NEXT"
+		     ((org-agenda-overriding-header "Next Actions")
+		      (org-agenda-skip-function 'bh/skip-habits-and-projects)
+		      (org-agenda-todo-ignore-scheduled t)
+		      (org-agenda-todo-ignore-deadlines t)
 		      (org-agenda-sorting-strategy
 		       '(category-keep))))
-	  (tags-todo "-HOLD-CANCELLED/!"
-		     ((org-agenda-overriding-header "Projects")
-		      (org-agenda-skip-function 'bh/skip-non-projects)
-		      (org-tags-match-list-sublevels 'indented)
+	  (tags-todo "-HOLD-CANCELLED-WAITING/!TODO"
+		     ((org-agenda-overriding-header "TODO lists")
+		      (org-agenda-skip-function 'bh/skip-projects-tasks-and-habits)
+		      (org-agenda-todo-ignore-scheduled t)
+		      (org-agenda-todo-ignore-deadlines t)
 		      (org-agenda-sorting-strategy
 		       '(category-keep))))
-	  (tags-todo "-CANCELLED/!NEXT"
-		     ((org-agenda-overriding-header (concat "Project Next Tasks"
-							    (if bh/hide-scheduled-and-waiting-next-tasks
-								""
-							      " (including WAITING and SCHEDULED tasks)")))
-		      (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
-		      (org-tags-match-list-sublevels t)
-		      (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-sorting-strategy
-		       '(todo-state-down effort-up category-keep))))
-	  (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
-		     ((org-agenda-overriding-header (concat "Project Subtasks"
-							    (if bh/hide-scheduled-and-waiting-next-tasks
-								""
-							      " (including WAITING and SCHEDULED tasks)")))
-		      (org-agenda-skip-function 'bh/skip-non-project-tasks)
-		      (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-sorting-strategy
-		       '(category-keep))))
-	  (tags-todo "-REFILE-CANCELLED-WAITING-HOLD/!"
-		     ((org-agenda-overriding-header (concat "Standalone Tasks"
-							    (if bh/hide-scheduled-and-waiting-next-tasks
-								""
-							      " (including WAITING and SCHEDULED tasks)")))
-		      (org-agenda-skip-function 'bh/skip-project-tasks)
-		      (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-todo-ignore-with-date bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-sorting-strategy
-		       '(category-keep))))
-	  (tags-todo "-CANCELLED+WAITING|HOLD/!"
-		     ((org-agenda-overriding-header (concat "Waiting and Postponed Tasks"
-							    (if bh/hide-scheduled-and-waiting-next-tasks
-								""
-							      " (including WAITING and SCHEDULED tasks)")))
-		      (org-agenda-skip-function 'bh/skip-non-tasks)
-		      (org-tags-match-list-sublevels nil)
-		      (org-agenda-todo-ignore-scheduled bh/hide-scheduled-and-waiting-next-tasks)
-		      (org-agenda-todo-ignore-deadlines bh/hide-scheduled-and-waiting-next-tasks)))
 	  (tags "-REFILE/"
-		((org-agenda-overriding-header "Tasks to Archive")
-		 (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
-		 (org-tags-match-list-sublevels nil))))
-	 nil)))
+		     ((org-agenda-overriding-header "Tasks to Archive")
+	              (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
+	              (org-tags-match-list-sublevels nil))))
+	  nil)))
 
 (defun bh/org-auto-exclude-function (tag)
   "Automatic task exclusion in the agenda with / RET"
@@ -462,9 +333,10 @@ Skip project and sub-project tasks, habits, and loose non-project tasks."
 ;; Change tasks to NEXT when clocking in
 (setq org-clock-in-switch-to-state 'bh/clock-in-to-next)
 ;; Separate drawers for clocking and logs
-(setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))
+(setq org-drawers (quote ("STATELOG" "LOGBOOK")))
 ;; Save clock data and state changes and notes in the LOGBOOK drawer
 (setq org-clock-into-drawer t)
+
 ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
 (setq org-clock-out-remove-zero-time-clocks t)
 ;; Clock out when moving task to a done state
@@ -532,23 +404,10 @@ as the default task."
 
 (defun bh/clock-in-default-task ()
   (save-excursion
+    (unless (marker-buffer org-clock-default-task)
+     (bh/clock-in-organization-task-as-default))
     (org-with-point-at org-clock-default-task
       (org-clock-in))))
-
-(defun bh/clock-in-parent-task ()
-  "Move point to the parent (project) task if any and clock in"
-  (let ((parent-task))
-    (save-excursion
-      (save-restriction
-        (widen)
-        (while (and (not parent-task) (org-up-heading-safe))
-          (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
-            (setq parent-task (point))))
-        (if parent-task
-            (org-with-point-at parent-task
-              (org-clock-in))
-          (when bh/keep-clock-running
-            (bh/clock-in-default-task)))))))
 
 (defvar bh/organization-task-id "eb155a82-92b2-4f25-a3c6-0304591af2f9")
 
@@ -560,9 +419,8 @@ as the default task."
 (defun bh/clock-out-maybe ()
   (when (and bh/keep-clock-running
              (not org-clock-clocking-in)
-             (marker-buffer org-clock-default-task)
              (not org-clock-resolving-clocks-due-to-idleness))
-    (bh/clock-in-parent-task)))
+    (bh/clock-in-default-task)))
 
 (add-hook 'org-clock-out-hook 'bh/clock-out-maybe 'append)
 
@@ -594,25 +452,3 @@ as the default task."
 (setq org-archive-location "%s_archive::* Archived Tasks")
 
 
-(defun bh/skip-non-archivable-tasks ()
-  "Skip trees that are not available for archiving"
-  (save-restriction
-    (widen)
-    ;; Consider only tasks with done todo headings as archivable candidates
-    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max))))
-          (subtree-end (save-excursion (org-end-of-subtree t))))
-      (if (member (org-get-todo-state) org-todo-keywords-1)
-          (if (member (org-get-todo-state) org-done-keywords)
-              (let* ((daynr (string-to-int (format-time-string "%d" (current-time))))
-                     (a-month-ago (* 60 60 24 (+ daynr 1)))
-                     (last-month (format-time-string "%Y-%m-" (time-subtract (current-time) (seconds-to-time a-month-ago))))
-                     (this-month (format-time-string "%Y-%m-" (current-time)))
-                     (subtree-is-current (save-excursion
-                                           (forward-line 1)
-                                           (and (< (point) subtree-end)
-                                                (re-search-forward (concat last-month "\\|" this-month) subtree-end t)))))
-                (if subtree-is-current
-                    subtree-end ; Has a date in this month or last month, skip it
-                  nil))  ; available to archive
-            (or subtree-end (point-max)))
-        next-headline))))
