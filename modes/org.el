@@ -46,22 +46,21 @@
 	  ("SOMEDAY" ("PROJECT"))))
 	
 
-;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings
+;; Capture templates for: TODO tasks
 (setq org-capture-templates
-      '(("t" "todo" entry (file "refile.org")
-	 "* TODO %U\n%a\n" :clock-in t :clock-resume t)
-	("s" "sigal" entry (file "refile.org")
-	 "* NEXT %U\n%a\n" :clock-in t :clock-resume t)
-	("n" "note" entry (file "refile.org")
-	 "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-	("j" "Journal" entry (file+datetree "diary.org")
+      '(("t" "todo" entry (file+olp "~/Dropbox/org/todo.org" "Tasks")
+	 "* TODO %?\n" :clock-in t :clock-resume t)
+	("w" "work todo" entry (file+olp "~/Dropbox/org/work.org" "Tasks")
+	 "* TODO %?\n" :clock-in t :clock-resume t)
+	("j" "Journal" entry (file+datetree "~/Dropbox/org/diary.org")
 	 "* %?\n%U\n" :clock-in t :clock-resume t)
-	("m" "Meeting" entry (file "refile.org")
-	 "* MEETING with %? :MEETING:\n%U" :clock-in t :clock-resume t)
-	("p" "Phone call" entry (file "refile.org")
-	 "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
-	("h" "Habit" entry (file "refile.org")
-	 "* NEXT %?\n%U\n%a\nSCHEDULED: %(format-time-string \"<%Y-%m-%d %a .+1d/3d>\")\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n")))
+	("m" "Meeting" entry (file+olp "~/Dropbox/org/work.org" "Meetings")
+	 "*  Meeting:%? \n" :clock-in t :clock-keep t)
+	("b" "Buy something" entry (file+olp "~/Dropbox/org/todo.org" "Shopping")
+	 "* SOMEDAY Buy: %? %^g \n" :prepend)
+	("i" "Interruptions" entry (file+olp "~/Dropbox/org/work.org" "Interruptions")
+	 "* TODO Interrupt by:%? for:  \n%U" :clock-in t :clock-keep t)))
+	
 
 (setq org-log-done 'time)
 
@@ -80,8 +79,8 @@
 (setq org-agenda-files (list (symbol-value 'org-directory)))
 
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
-(setq org-refile-targets '((nil :maxlevel . 9)
-			   (org-agenda-files :maxlevel . 9)))
+(setq org-refile-targets '((nil :level . 1)))
+			   
 
 ; Use full outline paths for refile targets - we file directly with IDO
 (setq org-refile-use-outline-path t)
@@ -122,7 +121,12 @@
                ((org-agenda-start-on-weekday 0)
 		(org-agenda-ndays 7)
 		(org-agenda-entry-types '(:closed))))
-	 
+	  
+          (tags-todo  "DEADLINE<\"<today>\"" 
+	       ((org-agenda-overriding-header "Delayed tasks")
+		(org-agenda-sorting-strategy
+		       '(category-keep))))
+	  
 	 (todo "DELEGATE|SOMEDAY" 
 	       ((org-agenda-overriding-header "Delegated tasks and some ideas")
 		(org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
@@ -147,19 +151,15 @@
 	 (
           (agenda "" ((org-agenda-ndays 1)
 		      (org-agenda-entry-types '(:scheduled :deadline))))
-	  (tags "REFILE"
-		((org-agenda-overriding-header "Tasks to Refile")
-		 (org-tags-match-list-sublevels nil)))
-
-	  (tags-todo "/NEXT"
-		((org-agenda-overriding-header "Next Actions")
-                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
-		 (org-agenda-sorting-strategy
-		       '(priority-up))))
 
 	  (tags-todo "-PROJECT/TODO"
 		((org-agenda-overriding-header "Task planning")
 		 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
+		 (org-agenda-sorting-strategy
+		       '(priority-up category-keep))))
+	  (tags-todo "/NEXT"
+		((org-agenda-overriding-header "Next Actions")
+                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
 		 (org-agenda-sorting-strategy
 		       '(priority-up category-keep))))
 
@@ -280,10 +280,10 @@ as the default task."
 (add-hook 'org-clock-out-hook 'bh/clock-out-maybe 'append)
 
 (setq org-agenda-clock-consistency-checks
-      '(:max-duration ("4:00")
+      '(:max-duration "4:00"
 	:min-duration 0
         :max-gap 0
-        :gap-ok-around ("4:00")))
+        :gap-ok-around "4:00"))
 
 ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
 (setq org-clock-out-remove-zero-time-clocks t)
