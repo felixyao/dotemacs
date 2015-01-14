@@ -46,7 +46,6 @@
 	  ("SOMEDAY" ("PROJECT"))))
 	
 
-
 ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, meetings
 (setq org-capture-templates
       '(("t" "todo" entry (file "refile.org")
@@ -220,12 +219,8 @@ Skips capture tasks, projects, and subprojects.
 Switch projects and subprojects from NEXT back to TODO"
   (when (not (and (boundp 'org-capture-mode) org-capture-mode))
     (cond
-     ((and (member (org-get-todo-state) (list "TODO"))
-           (bh/is-task-p))
-      "NEXT")
-     ((and (member (org-get-todo-state) (list "NEXT"))
-           (bh/is-project-p))
-      "TODO"))))
+     ((if  (member (org-get-todo-state) (list "TODO"))
+	  "NEXT")))))
 
 (defun bh/punch-in (arg)
   "Start continuous clocking and set the default task to the
@@ -285,10 +280,10 @@ as the default task."
 (add-hook 'org-clock-out-hook 'bh/clock-out-maybe 'append)
 
 (setq org-agenda-clock-consistency-checks
-      '(:max-duration "4:00"
-              :min-duration 0
-              :max-gap 0
-              :gap-ok-around ("4:00")))
+      '(:max-duration ("4:00")
+	:min-duration 0
+        :max-gap 0
+        :gap-ok-around ("4:00")))
 
 ;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
 (setq org-clock-out-remove-zero-time-clocks t)
@@ -310,5 +305,4 @@ as the default task."
 
 (setq org-archive-mark-done nil)
 (setq org-archive-location "%s_archive::* Archived Tasks")
-
 
