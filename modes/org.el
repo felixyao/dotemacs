@@ -150,7 +150,10 @@
 	(" " "Agenda"
 	 (
           (agenda "" ((org-agenda-ndays 1)
-		      (org-agenda-entry-types '(:scheduled :deadline))))
+		      (org-agenda-entry-types '(:scheduled :deadline))
+		      (org-agenda-repeating-timestamp-show-all nil)
+		      (org-deadline-warning-days 0)
+		      (org-agenda-show-all-dates nil)))
 
 	  (tags-todo "-PROJECT/TODO"
 		((org-agenda-overriding-header "Task planning")
