@@ -159,12 +159,12 @@
 		((org-agenda-overriding-header "Task planning")
 		 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
 		 (org-agenda-sorting-strategy
-		       '(priority-up category-keep))))
+		       '(priority-down category-down))))
 	  (tags-todo "/NEXT"
 		((org-agenda-overriding-header "Next Actions")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
 		 (org-agenda-sorting-strategy
-		       '(priority-up category-keep))))
+		       '(priority-down category-down))))
 
 	  (tags "-PROJECT+CLOSED<\"<-14d>\""
 		((org-agenda-overriding-header "Tasks to Archive")
