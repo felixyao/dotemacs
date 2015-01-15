@@ -306,3 +306,8 @@ as the default task."
 (setq org-archive-mark-done nil)
 (setq org-archive-location "%s_archive::* Archived Tasks")
 
+(setq org-agenda-exporter-settings
+      '((ps-number-of-columns 2)
+	(ps-landscape-mode t)
+	(org-agenda-add-entry-text-maxlines 5)
+	(htmlize-output-type 'css)))
