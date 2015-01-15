@@ -115,7 +115,7 @@
                                     
 ;; Custom agenda command definitions
 (setq org-agenda-custom-commands
-      '(
+      `(
 	("r" "Review"
 	 ((agenda "" 
                ((org-agenda-start-on-weekday 0)
@@ -145,7 +145,8 @@
 	       ((org-agenda-overriding-header "Scheduled no date tasks")
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
 		(org-agenda-sorting-strategy
-		 '(category-keep))))))
+		 '(category-keep))))
+	 nil))
 
 	(" " "Agenda"
 	 (
@@ -170,7 +171,8 @@
 		((org-agenda-overriding-header "Tasks to Archive")
 		 (org-tags-match-list-sublevels nil)))
 	  )
-	  nil)))
+	 nil
+	 ,(concat "~/Dropbox/" (format-time-string "%Y-%m-%d") ".html"))))
 
 (defun bh/org-auto-exclude-function (tag)
   "Automatic task exclusion in the agenda with / RET"
