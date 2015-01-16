@@ -148,6 +148,18 @@
 		 '(category-keep))))
 	 nil))
 
+	("p" "TimeReport"
+	 (
+          (agenda "" ((org-agenda-ndays 1)
+		      (org-agenda-entry-types '(:scheduled :deadline))
+		      (org-agenda-repeating-timestamp-show-all nil)
+		      (org-deadline-warning-days 0)
+		      (org-agenda-clockreport-mode t)
+		      (org-agenda-show-all-dates nil)))
+	  )
+	 nil
+	 ,(concat "~/Dropbox/" (format-time-string "%Y-%m-%d") ".html"))
+
 	(" " "Agenda"
 	 (
           (agenda "" ((org-agenda-ndays 1)
@@ -172,7 +184,7 @@
 		 (org-tags-match-list-sublevels nil)))
 	  )
 	 nil
-	 ,(concat "~/Dropbox/" (format-time-string "%Y-%m-%d") ".html"))))
+	 )))
 
 (defun bh/org-auto-exclude-function (tag)
   "Automatic task exclusion in the agenda with / RET"
