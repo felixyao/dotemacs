@@ -79,7 +79,8 @@
 (setq org-agenda-files (list (symbol-value 'org-directory)))
 
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
-(setq org-refile-targets '((nil :level . 1)))
+(setq org-refile-targets '((nil :level . 1)
+			   ("~/Dropbox/org/todo.org" :level . 1)))
 			   
 
 ; Use full outline paths for refile targets - we file directly with IDO
