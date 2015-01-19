@@ -118,12 +118,7 @@
 (setq org-agenda-custom-commands
       `(
 	("r" "Review"
-	 ((agenda "" 
-               ((org-agenda-start-on-weekday 0)
-		(org-agenda-ndays 7)
-		(org-agenda-entry-types '(:closed))))
-	  
-          (tags-todo  "DEADLINE<\"<today>\"" 
+	 ((tags-todo  "DEADLINE<\"<today>\"" 
 	       ((org-agenda-overriding-header "Delayed tasks")
 		(org-agenda-sorting-strategy
 		       '(category-keep))))
@@ -136,7 +131,7 @@
 	 (stuck ""
              ((org-agenda-todo-list-sublevels nil)))
 
-         (todo "TODO|PROJECT|SUBPROJECT|SOMEDAY"
+         (tags "/-SCHEDULED-DONE-CANCELLED"
              ((org-agenda-overriding-header "Wrongly scheduled tasks")
               (org-agenda-skip-function '(org-agenda-skip-entry-if 'notdeadline))
 	      (org-agenda-sorting-strategy
@@ -147,6 +142,11 @@
                 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
 		(org-agenda-sorting-strategy
 		 '(category-keep))))
+	 (agenda "" 
+               ((org-agenda-start-on-weekday 0)
+		(org-agenda-ndays 7)
+		(org-agenda-entry-types '(:closed))))
+	  
 	 nil))
 
 	("p" "TimeReport"
