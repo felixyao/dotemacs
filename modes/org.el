@@ -48,19 +48,18 @@
 
 ;; Capture templates for: TODO tasks
 (setq org-capture-templates
-      '(("t" "todo" entry (file+olp "~/Dropbox/org/todo.org" "Tasks")
+      `(("t" "todo" entry (file+olp ,(expand-file-name "todo.org" org-directory) "Tasks")
 	 "* TODO %?\n" :clock-in t :clock-resume t)
-	("w" "work todo" entry (file+olp "~/Dropbox/org/work.org" "Tasks")
+	("w" "work todo" entry (file+olp ,(expand-file-name "work.org" org-directory) "Tasks")
 	 "* TODO %?\n" :clock-in t :clock-resume t)
-	("j" "Journal" entry (file+datetree "~/Dropbox/org/diary.org")
+	("j" "Journal" entry (file+datetree ,(expand-file-name "diary.org" org-directory))
 	 "* %?\n%U\n" :clock-in t :clock-resume t)
-	("m" "Meeting" entry (file+olp "~/Dropbox/org/work.org" "Meetings")
+	("m" "Meeting" entry (file+olp ,(expand-file-name "work.org" org-directory) "Meetings")
 	 "*  Meeting:%? \n" :clock-in t :clock-keep t)
-	("b" "Buy something" entry (file+olp "~/Dropbox/org/todo.org" "Shopping")
+	("b" "Buy something" entry (file+olp ,(expand-file-name "todo.org" org-directory) "Shopping")
 	 "* SOMEDAY Buy: %? %^g \n" :prepend)
-	("i" "Interruptions" entry (file+olp "~/Dropbox/org/work.org" "Interruptions")
-	 "* TODO Interrupt by:%? for:  \n%U" :clock-in t :clock-keep t)))
-	
+	("i" "Interruptions" entry (file+olp ,(expand-file-name "work.org" org-directory) "Interruptions")
+	 "* TODO Interrupt by:%? for:  \n%U" :clock-in t :clock-keep t)))	
 
 (setq org-log-done 'time)
 
@@ -79,8 +78,8 @@
 (setq org-agenda-files (list (symbol-value 'org-directory)))
 
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
-(setq org-refile-targets '((nil :level . 1)
-			   ("~/Dropbox/org/todo.org" :level . 1)))
+(setq org-refile-targets `((nil :level . 1)
+			   (,(expand-file-name "todo.org" org-directory) :level . 1)))
 			   
 
 ; Use full outline paths for refile targets - we file directly with IDO
