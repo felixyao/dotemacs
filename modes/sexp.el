@@ -40,13 +40,31 @@
     (setq scheme-program-name "plt-r5rs")
   (setq scheme-program-name "guile"))
 
-(add-hook 'paredit-mode-hook
-	  (lambda ()
-	    (local-set-key (kbd "C-<") 'paredit-backward-barf-sexp)))
 
-(add-hook 'paredit-mode-hook
-	  (lambda ()
-	    (local-set-key (kbd "C->") 'paredit-backward-slurp-sexp)))
+(if (not (string= system-type "darwin"))
+    (progn
+     (add-hook 'paredit-mode-hook
+	       (lambda ()
+		 (local-set-key (kbd "M-<left>") 'paredit-backward-slurp-sexp)))
+
+     (add-hook 'paredit-mode-hook
+	       (lambda ()
+		 (local-set-key (kbd "M-<right>") 'paredit-backward-barf-sexp))))
+  (progn
+    (add-hook 'paredit-mode-hook
+	       (lambda ()
+		 (local-set-key (kbd "M-<right>") 'paredit-backward-slurp-sexp)))
+    (add-hook 'paredit-mode-hook
+	      (lambda ()
+		(local-set-key (kbd "M-<left>") 'paredit-backward-barf-sexp)))
+
+    (add-hook 'paredit-mode-hook
+	      (lambda ()
+		(local-set-key (kbd "H-right") 'paredit-forward-slurp-sexp)))
+
+    (add-hook 'paredit-mode-hook
+	      (lambda ()
+		(local-set-key (kbd "H-left") 'paredit-forward-barf-sexp)))))
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
