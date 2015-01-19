@@ -1,14 +1,14 @@
 
 (if (string= system-type "darwin")
-  ; make cmd key do Meta
-  (setq mac-command-modifier 'meta)
-  ; make opt key do Super
-  (setq mac-option-modifier 'super)
-  ; make Control key do Control
-  (setq mac-control-modifier 'control)
-  ; make Fn key do Hyper)
-  (setq ns-function-modifier 'hyper))
-
+    (progn
+      ; make cmd key do Meta
+      (setq mac-command-modifier 'meta)
+      ; make opt key do Super
+      (setq mac-option-modifier 'super)
+      ; make Control key do Control
+      (setq mac-control-modifier 'hyper)
+      ; make Fn key do Hyper)
+      (setq ns-function-modifier 'control)))
 
 (defun my-emacs-kill-whole-line (&optional arg)
   "A simple wrapper around command `kill-whole-line' that respects indentation.
