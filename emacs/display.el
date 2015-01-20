@@ -33,3 +33,6 @@ This follows freedesktop standards, should work in X servers."
                              '(2 "_NET_WM_STATE_FULLSCREEN" 0))
     (error "Only X server is supported")))
 
+;; Turn on the truncate line mode by default
+(set-default 'truncate-lines t)
+
