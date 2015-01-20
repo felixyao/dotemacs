@@ -23,7 +23,7 @@
       '(("TODO" :foreground "red" :weight bold)
 	("NEXT" :foreground "blue" :weight bold)
 	("DELEGATE" :foreground "orange" :weight bold)
-	("SOMEDAY" :oreground "light orange" :weight bold)
+	("SOMEDAY" :oreground "orange" :weight bold)
 	("SCHEDULED" :foreground "magenta" :weight bold)
 	("DONE" :foreground "dark grey" :weight bold)
 	("CANCELLED" :foreground "dark grey" :weight bold)
@@ -45,7 +45,21 @@
 	  ("CANCELLED" ("PROJECT"))
 	  ("SOMEDAY" ("PROJECT"))))
 	
+(defun bh/set-project-next ()
+  "Automatically set a project next todo as next"
+  (save-excursion
+    (let ((headline (or (and (org-at-heading-p)
+			     (point))
+			(org-back-to-heading))))
+      (if (and
+	   (member org-state org-done-keywords)
+	   (member "PROJECT" (org-get-tags-at headline))
+	   (org-get-next-sibling)
+	   (member (org-get-todo-state) (list "TODO"))
+	   )
+	  (org-todo "NEXT")))))s
 
+(add-hook 'org-after-todo-state-change-hook 'bh/set-project-next)
 ;; Capture templates for: TODO tasks
 (setq org-capture-templates
       `(("t" "todo" entry (file+olp ,(expand-file-name "todo.org" org-directory) "Tasks")
@@ -95,12 +109,6 @@
 (setq org-completion-use-ido t)
 ; Use the current window for indirect buffer display
 (setq org-indirect-buffer-display 'current-window)
-; Exclude DONE state tasks from refile targets
-(defun bh/verify-refile-target ()
-  "Exclude todo keywords with a done state from refile targets"
-  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-
-(setq org-refile-target-verify-function 'bh/verify-refile-target)
 
 ;; Do not dim blocked tasks
 (setq org-agenda-dim-blocked-tasks nil)
@@ -191,16 +199,6 @@
 	 nil
 	 )))
 
-(defun bh/org-auto-exclude-function (tag)
-  "Automatic task exclusion in the agenda with / RET"
-  (and (cond
-        ((string= tag "hold")
-         t)
-        ((string= tag "farm")
-         t))
-       (concat "-" tag)))
-
-(setq org-agenda-auto-exclude-function 'bh/org-auto-exclude-function)
 
 ;;To save the clock history across Emacs sessions
 (setq org-clock-persist 'history)
