@@ -122,8 +122,8 @@
 		(org-agenda-sorting-strategy
 		       '(category-keep))))
 	  
-	 (todo "DELEGATE|SOMEDAY" 
-	       ((org-agenda-overriding-header "Delegated tasks and some ideas")
+	 (todo "SOMEDAY" 
+	       ((org-agenda-overriding-header "Some ideas")
 		(org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
 	 	(org-agenda-sorting-strategy
 		       '(category-keep))))
@@ -172,12 +172,17 @@
 		((org-agenda-overriding-header "Task planning")
 		 (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
 		 (org-agenda-sorting-strategy
-		       '(priority-down category-down))))
+		       '(priority-down))))
 	  (tags-todo "/NEXT"
 		((org-agenda-overriding-header "Next Actions")
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
 		 (org-agenda-sorting-strategy
-		       '(priority-down category-down))))
+		  '(priority-down))))
+	  (todo "DELEGATE" 
+	       ((org-agenda-overriding-header "Delegated tasks")
+		(org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'scheduled))
+	 	(org-agenda-sorting-strategy
+		       '(priority-down))))
 
 	  (tags "-PROJECT+CLOSED<\"<-14d>\""
 		((org-agenda-overriding-header "Tasks to Archive")
