@@ -20,7 +20,7 @@
  ((string= system-type "gnu/linux")
   (set-face-attribute 'default nil :height 180))
  ((string= system-type "windows-nt")
-  (set-face-attribute 'default nil :height 150))
+  (set-face-attribute 'default nil :height 120))
  ((string= system-type "darwin")
   (set-face-attribute 'default nil :height 170)))
 ;;Set fullscreen
