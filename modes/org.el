@@ -93,6 +93,7 @@
 
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
 (setq org-refile-targets `((nil :level . 1)
+			   (nil :todo . "PROJECT" )
 			   (,(expand-file-name "todo.org" org-directory) :level . 1)))
 			   
 
