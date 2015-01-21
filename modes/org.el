@@ -57,7 +57,7 @@
 	   (org-get-next-sibling)
 	   (member (org-get-todo-state) (list "TODO"))
 	   )
-	  (org-todo "NEXT")))))s
+	  (org-todo "NEXT")))))
 
 (add-hook 'org-after-todo-state-change-hook 'bh/set-project-next)
 ;; Capture templates for: TODO tasks
