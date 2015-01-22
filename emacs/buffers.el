@@ -31,5 +31,7 @@
 (setq desktop-dirname my-emacs-auto-generate)
 (setq desktop-save t)
 (desktop-save-mode +1)
-(desktop-revert)
+
+(setq desktop-base-lock-name
+       (format "%s-%d" desktop-base-lock-name (emacs-pid)))
  
