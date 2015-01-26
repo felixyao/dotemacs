@@ -73,7 +73,7 @@
 	("b" "Buy something" entry (file+olp ,(expand-file-name "todo.org" org-directory) "Shopping")
 	 "* SOMEDAY Buy: %? %^g \n" :prepend)
 	("i" "Interruptions" entry (file+olp ,(expand-file-name "work.org" org-directory) "Interruptions")
-	 "* TODO Interrupt by:%? for:  \n%U" :clock-in t :clock-keep t)))	
+	 "* TODO Interrupt by:%? for:  \n%U" :clock-in t :clock-resume t)))	
 
 (setq org-log-done 'time)
 
