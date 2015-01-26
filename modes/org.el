@@ -120,7 +120,7 @@
 
 (setq org-agenda-tags-todo-honor-ignore-options t)
 
-(setq org-stuck-projects '("PROJECT/+PROJECT" ("NEXT" "SCHEDULED")))
+(setq org-stuck-projects '("PROJECT/+PROJECT" ("NEXT" "SCHEDULED" "DELEGATE")))
                                     
 ;; Custom agenda command definitions
 (setq org-agenda-custom-commands
