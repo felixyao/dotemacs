@@ -1,5 +1,6 @@
 ;; Org mode configurations
 (require 'org-habit)
+(require 'org-checklist)
 
 ;The following customization sets a default target file for notes, and
 ;defines a global for capturing new material.
@@ -29,6 +30,8 @@
 	("CANCELLED" :foreground "dark grey" :weight bold)
 	("PROJECT" :foreground "forest green" :weight bold)
 	("SUBPROJECT" :foreground "forest green" :weight bold)))
+
+(setq org-todo-repeat-to-state "SCHEDULED")
 
 
 (setq org-use-fast-todo-selection t)

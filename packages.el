@@ -13,6 +13,9 @@
 
 (add-to-list 'package-archives 
              '("marmalade" . "https://marmalade-repo.org/packages/") t)
+
+(add-to-list 'package-archives 
+      '("org" . "http://orgmode.org/elpa/") t)
  
 (setq ac-comphist-file (expand-file-name "ac-comphist.dat"  my-emacs-auto-generate))
 
@@ -20,7 +23,7 @@
 (setq url-configuration-directory (expand-file-name "url" my-emacs-auto-generate))
 
 ;; Packages I like
-(defvar my-packages '(desktop magit paredit smex autopair htmlize))
+(defvar my-packages '(desktop magit paredit smex autopair htmlize org org-plus-contrib))
 
 (defun my-packages-installed-p ()
   (loop for p in my-packages
