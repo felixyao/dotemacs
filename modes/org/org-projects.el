@@ -40,12 +40,12 @@
      :publishing-function org-publish-attachment     
      )
      ("org-img"
-     :base-directory ,(expand-file-name "img" fy/source-folder)
-     :base-extension "png\\|jpg\\|gif"
-     :publishing-directory ,(expand-file-name "img" fy/publich-folder)
-     :recursive nil
-     :publishing-function org-publish-attachment     
-     )
+      :base-directory ,fy/source-folder
+      :base-extension "png\\|jpg\\|gif"
+      :publishing-directory ,fy/publich-folder
+      :recursive t
+      :publishing-function org-publish-attachment)     
+     
     ("org-personal"
      :base-directory ,(expand-file-name "personal" fy/source-folder)
      :base-extension "org"
@@ -93,3 +93,4 @@
       `("org-work-project"
          :components ("org-css" "org-js" "org-work")
        ))))
+
