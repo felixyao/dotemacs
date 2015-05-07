@@ -6,15 +6,56 @@
 ;; replace buffer-menu with ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+(setq ibuffer-saved-filter-groups
+      '(("default"
+	 ("code " (or
+		   (mode . c-mode)
+		   (mode . c++-mode)
+		   (mode . python-mode)
+		   (mode . cperl-mode)))
+	 ("org" (or
+		 (mode . org-mode)
+		 (name . "^\\*Org Agenda\\*$")))
+	 
+	 ("shell" (or
+		   (mode . shell-mode)
+		   (mode . term-mode)
+		   (mode . eshell-mode)))
+	 ("dired" (mode . dired-mode))
+	 ("lisp" (or
+		 (mode . emacs-lisp-mode)
+		 (mode . scheme-mode)))
+	 ("New" (or
+		   (name . "^\\*NEW\\*\\(<[0-9]+>\\)?$")))
+	 ("emacs" (or
+		   (name . "^\\*scratch\\*$")
+		   (name . "^\\*Help\\*$")
+		   (name . "^\\*Completions\\*$")
+		   (name . "^\\*Backtrace\\*$")
+		   (name . "^\\*Messages\\*$")))
+	 ("gnus" (or
+		  (mode . message-mode)
+		  (mode . bbdb-mode)
+		  (mode . mail-mode)
+		  (mode . gnus-group-mode)
+		  (mode . gnus-summary-mode)
+		  (mode . gnus-article-mode)
+		  (name . "^\\.bbdb$")
+		  (name . "^\\.newsrc-dribble"))))
+	))
 
-(defun my-emacs-create-scratch-buffer ()
+(add-hook 'ibuffer-mode-hook
+	  (lambda ()
+	    (ibuffer-switch-to-saved-filter-groups "default")))
+
+(defun my-emacs-create-buffer ()
   "Create a new scratch buffer."
   (interactive)
   (progn
     (switch-to-buffer
-     (get-buffer-create (generate-new-buffer-name "*scratch*")))
-    (emacs-lisp-mode)))
-(global-set-key (kbd "<f1>") 'my-emacs-create-scratch-buffer)
+     (get-buffer-create (generate-new-buffer-name "*NEW*")))
+    (text-mode)))
+(global-set-key (kbd "<f1>") 'my-emacs-create-buffer)
 
 ;; Always create new buffer the buffer name doesn't exist
 (setq ido-create-new-buffer 'always)
