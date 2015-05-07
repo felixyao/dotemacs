@@ -1,30 +1,65 @@
 ;; My shell mode configurations including eshell shell ansi-term
+(require 'shell)
+(require 'term)
+;get rid of the C-M
+(add-hook 'comint-output-filter-functions
+            'comint-strip-ctrl-m)
 
-(defun my-emacs-start-or-switch-to (function buffer-name)
-  "Invoke FUNCTION if there is no buffer with BUFFER-NAME.
-Otherwise switch to the buffer named BUFFER-NAME.  Don't clobber
-the current buffer."
-  (if (not (get-buffer buffer-name))
-      (progn
-	(split-window-sensibly (selected-window))
-	(other-window 1)
-	(funcall function))
-    (switch-to-buffer-other-window buffer-name)))
- 
-
-
-(defun my-emacs-term-buffer ()
-  "Create or visit a terminal buffer."
+(defun my-create-shell ()
+  "Create another shell buffer"
   (interactive)
-  (my-emacs-start-or-switch-to (lambda ()
-				(ansi-term (getenv "SHELL")))
-			      "*ansi-term*"))
+  (cond ((or (equal major-mode 'term-mode)
+	     (equal major-mode 'shell-mode))
+	 (shell (generate-new-buffer-name "*shell*")))
+	((equal major-mode 'eshell-mode)
+	 (eshell t))
+	(t (shell))))
+
+(defun my-term-switch-to-shell-mode ()
+  (interactive)
+  (if (equal major-mode 'term-mode)
+      (progn
+        (shell-mode)
+        (set-process-filter  (get-buffer-process (current-buffer)) 'comint-output-filter )
+        (local-set-key (kbd "C-j") 'my-term-switch-to-shell-mode)
+        (compilation-shell-minor-mode 1)
+        (comint-send-input)
+	)
+    (progn
+      (compilation-shell-minor-mode -1)
+      (font-lock-mode -1)
+      (set-process-filter  (get-buffer-process (current-buffer)) 'term-emulate-terminal)
+      (term-mode)
+      (term-char-mode)
+      (term-send-raw-string (kbd "C-l"))
+      )))
+
+(defun my-clear-shell ()
+  (interactive)
+  (let ((comint-buffer-maximum-size 0))
+    (comint-truncate-buffer)))
+
+;remap C-z to real shell
+(add-hook 'shell-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-z") 'self-insert-command)
+	    (local-set-key (kbd "<f1>") 'my-create-shell)
+	    (local-set-key (kbd "C-j") 'my-term-switch-to-shell-mode)
+	    (local-set-key (kbd "C-l") 'my-clear-shell)))
+
+(add-hook 'eshell-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-z") 'self-insert-command)
+	    (local-set-key (kbd "<f1>") 'my-create-shell)))
+
+(add-hook 'term-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-z") 'self-insert-command)
+	    (local-set-key (kbd "<f1>") 'my-create-shell)
+	    (define-key term-raw-map (kbd "C-j") 'my-term-switch-to-shell-mode)
+	    (local-set-key (kbd "C-l") (lambda ()
+					 (interactive)
+					 (term-send-raw-string (kbd "C-l"))))))
 
 (setq eshell-directory-name (expand-file-name "eshell" my-emacs-auto-generate))
-
-(define-key my-emacs-prefix-keymap (kbd "t") 'my-emacs-term-buffer)
-(define-key my-emacs-prefix-keymap (kbd "e") 'eshell)
-;; Start a new eshell even if one is active.
-(define-key my-emacs-prefix-keymap (kbd "E") (lambda () (interactive) (eshell t)))
-(define-key my-emacs-prefix-keymap (kbd "s") 'shell)
 
