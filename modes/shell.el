@@ -54,12 +54,12 @@
 
 (add-hook 'term-mode-hook
 	  (lambda ()
-	    (local-set-key (kbd "C-z") 'self-insert-command)
-	    (local-set-key (kbd "<f1>") 'my-create-shell)
+	    (define-key term-raw-map (kbd "C-z") 'self-insert-command)
+	    (define-key term-raw-map (kbd "<f1>") 'my-create-shell)
 	    (define-key term-raw-map (kbd "C-j") 'my-term-switch-to-shell-mode)
-	    (local-set-key (kbd "C-l") (lambda ()
-					 (interactive)
-					 (term-send-raw-string (kbd "C-l"))))))
+	    (define-key term-raw-map (kbd "C-l") (lambda ()
+						   (interactive)
+						   (term-send-raw-string (kbd "C-l"))))))
 
 (setq eshell-directory-name (expand-file-name "eshell" my-emacs-auto-generate))
 
