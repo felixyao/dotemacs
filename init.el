@@ -19,10 +19,13 @@
 (load "~/.emacs.d/emacs/minibuffer")
 (load "~/.emacs.d/emacs/completion")
 (load "~/.emacs.d/emacs/bookmark")
+
 (load "~/.emacs.d/modes/shell")
 (load "~/.emacs.d/modes/magit")
 (load "~/.emacs.d/modes/sexp")
 (load "~/.emacs.d/modes/org/org")
 (load "~/.emacs.d/modes/org/org-bable")
 (load "~/.emacs.d/modes/org/org-projects")
+(load "~/.emacs.d/modes/common-c/c-mode")
+(load "~/.emacs.d/modes/common-c/c++-mode")
 (load custom-file)

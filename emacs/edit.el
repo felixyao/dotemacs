@@ -43,12 +43,18 @@ point reaches the beginning or end of the buffer, stop there."
 (global-set-key [remap move-beginning-of-line] 'my-emacs-move-beginning-of-line)
 
 ;; Always load newest byte code
+
 (setq load-prefer-newer t)
 
 ;; smart tab behavior - indent or complete
-(setq tab-always-indent 'complete)
+(setq tab-always-indent t)
 
-;; enable cua rectangle mode
+;; Fix C-i binding
+(define-key input-decode-map [?\C-i] [C-i])
+
+(global-set-key (kbd "<C-i>") 'indent-for-tab-command)
+
+ ;; enable cua rectangle mode
 (cua-selection-mode t)
 
 ;;auto parect 
