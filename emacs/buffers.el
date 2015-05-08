@@ -6,6 +6,7 @@
 ;; replace buffer-menu with ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
+;;Ibuffer group settings
 (setq ibuffer-saved-filter-groups
       '(("default"
 	 ("code " (or
@@ -47,6 +48,7 @@
 (add-hook 'ibuffer-mode-hook
 	  (lambda ()
 	    (ibuffer-switch-to-saved-filter-groups "default")))
+(setq ibuffer-show-empty-filter-groups nil)
 
 (defun my-emacs-create-buffer ()
   "Create a new scratch buffer."
