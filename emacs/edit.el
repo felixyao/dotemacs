@@ -10,6 +10,11 @@
       ; make Fn key do Hyper)
       (setq ns-function-modifier 'control)))
 
+(if  (or (string= system-type "darwin")
+	 (string= system-type "ms-dos")
+	 (string= system-type "windows-nt"))
+    (server-start))
+
 (defun my-emacs-kill-whole-line (&optional arg)
   "A simple wrapper around command `kill-whole-line' that respects indentation.
 Passes ARG to command `kill-whole-line' when provided."
@@ -67,3 +72,4 @@ point reaches the beginning or end of the buffer, stop there."
 ;; Suit for Nodic layout 
 (define-key my-emacs-prefix-keymap (kbd "n") 'end-of-buffer)
 (define-key my-emacs-prefix-keymap (kbd "a") 'beginning-of-buffer)
+

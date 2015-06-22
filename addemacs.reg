@@ -3,4 +3,5 @@ Windows Registry Editor Version 5.00
 ; This registry script adds an "Open In Emacs" command to the file menu.
 ;
 [HKEY_CLASSES_ROOT\*\Shell\Open In Emacs\Command]
-@="\"C:\\Program Files\\emacs-24.3\\bin\\emacsclientw.exe\" -n -a \"C:\\Program Files\\emacs-24.3\\bin\\runemacs.exe\" \"%1\""
+@="\"C:\\Program Files (x86)\\emacs-24.3\\bin\\emacsclientw.exe\" -n -a \"C:\\Program Files (x86)\\emacs-24.3\\bin\\runemacs.exe\" \"%1\""
+
