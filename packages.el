@@ -23,7 +23,21 @@
 (setq url-configuration-directory (expand-file-name "url" my-emacs-auto-generate))
 
 ;; Packages I like
-(defvar my-packages '(desktop magit paredit smex autopair htmlize org org-plus-contrib ggtags auto-complete auto-complete-nxml))
+(defvar my-packages '(desktop 
+                      magit 
+					  projectile
+					  paredit 
+					  smex 
+					  autopair 
+					  htmlize 
+					  org 
+					  org-plus-contrib 
+					  ggtags 
+					  yasnippet 
+					  auto-complete 
+					  auto-complete-c-headers 
+					  auto-complete-clang  
+					  auto-complete-nxml))
 
 (defun my-packages-installed-p ()
   (loop for p in my-packages

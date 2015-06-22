@@ -19,6 +19,7 @@
 (load "~/.emacs.d/emacs/minibuffer")
 (load "~/.emacs.d/emacs/completion")
 (load "~/.emacs.d/emacs/bookmark")
+(load "~/.emacs.d/emacs/project.el")
 
 (load "~/.emacs.d/modes/shell")
 (load "~/.emacs.d/modes/magit")
@@ -26,6 +27,7 @@
 (load "~/.emacs.d/modes/org/org")
 (load "~/.emacs.d/modes/org/org-bable")
 (load "~/.emacs.d/modes/org/org-projects")
+(load "~/.emacs.d/modes/common-c/common")
 (load "~/.emacs.d/modes/common-c/c-mode")
 (load "~/.emacs.d/modes/common-c/c++-mode")
 (load custom-file)
