@@ -18,3 +18,8 @@
 (global-auto-complete-mode t)
 (setq ac-auto-start nil)
 (define-key ac-mode-map (kbd "TAB") 'auto-complete)
+
+
+(require 'yasnippet)
+(yas-global-mode 1)
+
