@@ -23,3 +23,8 @@
 (require 'yasnippet)
 (yas-global-mode 1)
 
+;Ido imenu
+(autoload 'idomenu "idomenu" nil t)
+(define-key my-emacs-prefix-keymap (kbd "o") 'idomenu)
+
+

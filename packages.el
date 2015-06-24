@@ -28,6 +28,7 @@
 					  projectile
 					  paredit 
 					  smex 
+					  idomenu
 					  autopair 
 					  htmlize 
 					  org 
