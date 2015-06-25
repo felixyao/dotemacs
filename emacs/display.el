@@ -36,3 +36,13 @@ This follows freedesktop standards, should work in X servers."
 ;; Turn on the truncate line mode by default
 (set-default 'truncate-lines t)
 
+;;Diminish some modes 
+(require 'diminish)
+(diminish 'abbrev-mode)
+(eval-after-load "autopair" '(diminish 'autopair-mode))
+(eval-after-load "auto-complete" '(diminish 'auto-complete-mode))
+(eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
+(eval-after-load "paredit" '(diminish 'paredit-mode))
+(eval-after-load "ggtags" '(diminish 'ggtags-mode))
+
+

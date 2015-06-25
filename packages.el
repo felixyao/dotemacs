@@ -25,6 +25,7 @@
 ;; Packages I like
 (defvar my-packages '(desktop 
                       magit 
+					  diminish
 					  projectile
 					  paredit 
 					  smex 
