@@ -25,6 +25,6 @@
 
 ;Ido imenu
 (autoload 'idomenu "idomenu" nil t)
-(define-key my-emacs-prefix-keymap (kbd "o") 'idomenu)
+(define-key my-emacs-prefix-keymap (kbd "t") 'idomenu)
 
 

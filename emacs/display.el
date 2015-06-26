@@ -46,3 +46,7 @@ This follows freedesktop standards, should work in X servers."
 (eval-after-load "ggtags" '(diminish 'ggtags-mode))
 
 
+(setq frame-title-format
+      '((:eval (if (buffer-file-name)
+                   (abbreviate-file-name (buffer-file-name))
+                 "%b"))))
