@@ -5,6 +5,7 @@
 
 ;; replace buffer-menu with ibuffer
 (global-set-key (kbd "C-x C-b") 'ibuffer)
+(evil-ex-define-cmd "[b]uffer" 'ibuffer)
 
 ;;Ibuffer group settings
 (setq ibuffer-saved-filter-groups

@@ -44,6 +44,7 @@ This follows freedesktop standards, should work in X servers."
 (eval-after-load "yasnippet" '(diminish 'yas-minor-mode))
 (eval-after-load "paredit" '(diminish 'paredit-mode))
 (eval-after-load "ggtags" '(diminish 'ggtags-mode))
+(eval-after-load "undo-tree" '(diminish 'undo-tree-mode))
 
 
 (setq frame-title-format

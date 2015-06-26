@@ -6,15 +6,15 @@
 "My personal prefix keymap")
 (define-prefix-command 'my-emacs-prefix-keymap)
 ;;Define preferable key 
-(global-set-key (kbd "C-z") 'my-emacs-prefix-keymap)
+(global-set-key (kbd "<f8>") 'my-emacs-prefix-keymap)
 
 ;;Configuration from custom 
 (setq custom-file "~/.emacs.d/custom.el")
 (load "~/.emacs.d/packages.el")
 (load "~/.emacs.d/emacs/display")
 (load "~/.emacs.d/emacs/mark")
-(load "~/.emacs.d/emacs/buffers")
 (load "~/.emacs.d/emacs/edit")
+(load "~/.emacs.d/emacs/buffers")
 (load "~/.emacs.d/emacs/files")
 (load "~/.emacs.d/emacs/minibuffer")
 (load "~/.emacs.d/emacs/completion")

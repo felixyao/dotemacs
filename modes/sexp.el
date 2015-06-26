@@ -2,6 +2,7 @@
 
 
 (require 'cmuscheme)
+(require 'evil-paredit)
 
 (defun kh/get-scheme-proc-create ()
   "Create one scheme process if no one is created."
@@ -59,9 +60,11 @@
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
-	    (paredit-mode 1)))
+			(paredit-mode 1)
+			(evil-paredit-mode 1)))
 
 (add-hook 'scheme-mode-hook
           (lambda ()
              (paredit-mode 1)
-	     (local-set-key (kbd "C-x C-e") 'kh/scheme-send-last-sexp)))
+			 (evil-paredit-mode 1)
+			 (local-set-key (kbd "C-x C-e") 'kh/scheme-send-last-sexp)))

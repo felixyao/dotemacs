@@ -25,6 +25,8 @@
 ;; Packages I like
 (defvar my-packages '(desktop 
                       magit 
+					  evil
+					  evil-paredit 
 					  diminish
 					  projectile
 					  paredit 

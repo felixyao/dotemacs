@@ -270,7 +270,7 @@ as the default task."
       (if (and (equal major-mode 'org-mode) (not (org-before-first-heading-p)) (eq arg 4))
           (org-clock-in '(16))
         (bh/clock-in-organization-task-as-default)))))
-(global-set-key "\C-zi" 'bh/punch-in)
+(define-key my-emacs-prefix-keymap (kbd "i") 'bh/punch-in)
 
 (defun bh/punch-out ()
   (interactive)
@@ -278,7 +278,7 @@ as the default task."
   (when (org-clock-is-active)
     (org-clock-out))
   (org-agenda-remove-restriction-lock))
-(global-set-key "\C-zo" 'bh/punch-out)
+(define-key my-emacs-prefix-keymap (kbd "o") 'bh/punch-out)
 
 
 (defun bh/clock-in-default-task ()
