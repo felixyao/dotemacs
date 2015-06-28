@@ -33,7 +33,7 @@
 			(setq-local imenu-create-index-function #'ggtags-build-imenu-index)
 			(when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
               (ggtags-mode 1))))
-(set-default 'ac-clang-flags '("-std=c99"))
+(set-default 'ac-clang-flags nil)
 (define-key evil-normal-state-map (kbd "M-.") 'ggtags-find-tag-dwim)
 (defun my-get-include-directories ()
   (append achead:include-directories (my-get-project-include-directories))
