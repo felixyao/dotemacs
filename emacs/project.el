@@ -2,7 +2,7 @@
 
 (projectile-global-mode)
 
-(setq projectile-indexing-method 'native)
+(setq projectile-indexing-method 'alien)
 
 (setq projectile-enable-cathing t)
 
