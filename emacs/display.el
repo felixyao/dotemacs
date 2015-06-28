@@ -51,3 +51,11 @@ This follows freedesktop standards, should work in X servers."
       '((:eval (if (buffer-file-name)
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
+
+(setq evil-emacs-state-cursor  '("black" box))
+(setq evil-normal-state-cursor '("purple" box))
+(setq evil-visual-state-cursor '("orange" box))
+(setq evil-insert-state-cursor '("purple" bar))
+(setq evil-replace-state-cursor '("cyan" bar))
+(setq evil-operator-state-cursor '("puple" hollow))
+(setq evil-motion-state-cursor '("purple" box))

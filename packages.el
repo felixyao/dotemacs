@@ -27,6 +27,7 @@
                       magit 
 					  evil
 					  evil-paredit 
+					  evil-surround
 					  diminish
 					  projectile
 					  paredit 
