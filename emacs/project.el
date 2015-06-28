@@ -56,6 +56,15 @@
 			 (setq my-current-include (delete-dups (append my-current-include dirs))))
 		   ))))
 
+(defun my-parser-local-variable-sys-include ()
+  (cond ((boundp 'my-sys-includes)
+		 (let ((dirs (eval my-sys-includes)))
+		   (if my-current-project
+			   (let ((old-dirs (oref my-current-project include-path)))
+				 (oset my-current-project include-path (delete-dups (append dirs old-dirs))))
+			 (setq my-current-include (delete-dups (append my-current-include dirs))))
+		   ))))
+
 (defun my-get-project-include-directories ()
   (if my-current-project
 	  (oref my-current-project include-path)
@@ -64,6 +73,7 @@
 (add-hook 'hack-local-variables-hook
 		  (lambda ()
 			(my-parser-local-variable-project)
+			(my-parser-local-variable-sys-include)
 			(my-parser-local-variable-include)
 			(setq ac-clang-flags (delete-dups
 								  (append ac-clang-flags

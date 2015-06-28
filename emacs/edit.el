@@ -54,11 +54,6 @@ point reaches the beginning or end of the buffer, stop there."
 ;; smart tab behavior - indent or complete
 (setq tab-always-indent t)
 
-;; Fix C-i binding
-(define-key input-decode-map [?\C-i] [C-i])
-
-(global-set-key (kbd "<C-i>") 'indent-for-tab-command)
-
  ;; enable cua rectangle mode
 (cua-selection-mode t)
 

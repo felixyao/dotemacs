@@ -57,5 +57,5 @@ This follows freedesktop standards, should work in X servers."
 (setq evil-visual-state-cursor '("orange" box))
 (setq evil-insert-state-cursor '("purple" bar))
 (setq evil-replace-state-cursor '("cyan" bar))
-(setq evil-operator-state-cursor '("puple" hollow))
+(setq evil-operator-state-cursor '("purple" hollow))
 (setq evil-motion-state-cursor '("purple" box))

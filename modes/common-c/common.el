@@ -29,11 +29,11 @@
 
 (add-hook 'c-mode-common-hook
           (lambda ()
-			(setq ac-sources (append '(ac-source-semantic ac-source-c-headers ac-source-clang ac-source-yasnippet) ac-sources))
+			(setq ac-sources (append '(ac-source-c-headers ac-source-clang ac-source-yasnippet) ac-sources))
 			(setq-local imenu-create-index-function #'ggtags-build-imenu-index)
 			(when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
               (ggtags-mode 1))))
-
+(set-default 'ac-clang-flags '("-std=c99"))
 (define-key evil-normal-state-map (kbd "M-.") 'ggtags-find-tag-dwim)
 (defun my-get-include-directories ()
   (append achead:include-directories (my-get-project-include-directories))

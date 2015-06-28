@@ -14,11 +14,9 @@
                                          try-complete-lisp-symbol))
 
 (require 'auto-complete-config)
+(setq ac-delay 0.5)
 (ac-config-default)
 (global-auto-complete-mode t)
-(setq ac-auto-start nil)
-(define-key ac-mode-map (kbd "TAB") 'auto-complete)
-
 
 (require 'yasnippet)
 (yas-global-mode 1)
