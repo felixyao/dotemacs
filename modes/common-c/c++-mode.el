@@ -2,6 +2,6 @@
 
 (add-hook 'c-mode-hook 
 	  (lambda ()
-	    (ggtags-mode)
 	    (local-set-key (kbd "M-)") 'ggtags-find-reference)
+	    (modify-syntax-entry ?_ "w" c++-mode-syntax-table)
 	    ))

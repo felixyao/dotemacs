@@ -61,10 +61,14 @@
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
 			(paredit-mode 1)
+            (modify-syntax-entry ?_ "w" emacs-lisp-mode-syntax-table)
+            (modify-syntax-entry ?- "w" emacs-lisp-mode-syntax-table)
 			(evil-paredit-mode 1)))
 
 (add-hook 'scheme-mode-hook
           (lambda ()
              (paredit-mode 1)
 			 (evil-paredit-mode 1)
+             (modify-syntax-entry ?_ "w" scheme-mode-syntax-table)
+             (modify-syntax-entry ?- "w" scheme-mode-syntax-table)
 			 (local-set-key (kbd "C-x C-e") 'kh/scheme-send-last-sexp)))
