@@ -18,9 +18,6 @@
 (ac-config-default)
 (global-auto-complete-mode t)
 
-(require 'yasnippet)
-(yas-global-mode 1)
-
 ;Ido imenu
 (autoload 'idomenu "idomenu" nil t)
 (define-key my-emacs-prefix-keymap (kbd "t") 'idomenu)

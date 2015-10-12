@@ -25,24 +25,22 @@
 ;; Packages I like
 (defvar my-packages '(desktop 
                       magit 
-					  evil
-					  evil-paredit 
-					  evil-surround
-					  diminish
-					  projectile
-					  paredit 
-					  smex 
-					  idomenu
-					  autopair 
-					  htmlize 
-					  org 
-					  org-plus-contrib 
-					  ggtags 
-					  yasnippet 
-					  auto-complete 
-					  auto-complete-c-headers 
-					  auto-complete-clang  
-					  auto-complete-nxml))
+		      evil
+		      evil-paredit 
+		      evil-surround
+		      diminish
+		      projectile
+		      paredit 
+		      smex 
+		      idomenu
+		      htmlize 
+		      org 
+		      org-plus-contrib 
+		      ggtags 
+		      auto-complete 
+		      auto-complete-c-headers 
+		      auto-complete-clang  
+		      auto-complete-nxml))
 
 (defun my-packages-installed-p ()
   (loop for p in my-packages

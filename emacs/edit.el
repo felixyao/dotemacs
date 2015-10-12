@@ -57,10 +57,6 @@ point reaches the beginning or end of the buffer, stop there."
  ;; enable cua rectangle mode
 (cua-selection-mode t)
 
-;;auto parect 
-(require 'autopair)
-(autopair-global-mode)
-
 ;; try to using ido complete the filename
 (setq ido-use-filename-at-point 'guess)
 

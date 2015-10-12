@@ -42,20 +42,16 @@
 ;remap C-z to real shell
 (add-hook 'shell-mode-hook
 	  (lambda ()
-	    (local-set-key (kbd "C-z") 'self-insert-command)
 	    (local-set-key (kbd "<f1>") 'my-create-shell)
 	    (local-set-key (kbd "C-j") 'my-term-switch-to-shell-mode)
 	    (local-set-key (kbd "C-l") 'my-clear-shell)))
 
 (add-hook 'eshell-mode-hook
 	  (lambda ()
-	    (local-set-key (kbd "C-z") 'self-insert-command)
 	    (local-set-key (kbd "<f1>") 'my-create-shell)))
 
 (add-hook 'term-mode-hook
 	  (lambda ()
-		(yas-minor-mode -1)
-	    (define-key term-raw-map (kbd "C-z") 'self-insert-command)
 	    (define-key term-raw-map (kbd "<f1>") 'my-create-shell)
 	    (define-key term-raw-map (kbd "C-j") 'my-term-switch-to-shell-mode)
 	    (define-key term-raw-map (kbd "C-l") (lambda ()

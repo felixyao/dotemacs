@@ -10,26 +10,9 @@
 
 (setq ac-clang-executable  "clang")
 
-(global-semantic-idle-scheduler-mode)
-(global-semantic-idle-completions-mode)
-(global-semantic-decoration-mode)
-(global-semantic-highlight-func-mode)
-(global-semantic-show-unmatched-syntax-mode)
-(global-semanticdb-minor-mode 1)
-(global-semantic-idle-scheduler-mode 1)
-(global-semantic-idle-summary-mode 1)
-(add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
-
-(when (cedet-gnu-global-version-check t)
-  (semanticdb-enable-gnu-global-databases 'c-mode)
-  (semanticdb-enable-gnu-global-databases 'c++-mode))
-
-(semantic-mode 1)
-
-
 (add-hook 'c-mode-common-hook
           (lambda ()
-			(setq ac-sources (append '(ac-source-c-headers ac-source-clang ac-source-yasnippet) ac-sources))
+			(setq ac-sources (append '(ac-source-c-headers ac-source-clang) ac-sources))
 			(setq-local imenu-create-index-function #'ggtags-build-imenu-index)
 			(when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
               (ggtags-mode 1))))
