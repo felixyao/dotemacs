@@ -1,49 +1,53 @@
 ;; My shell mode configurations including eshell shell ansi-term
 (require 'shell)
-(require 'term)
-;get rid of the C-M
-(add-hook 'comint-output-filter-functions
-            'comint-strip-ctrl-m)
+(require 'multi-term)
 
+;;Windows use the normal shell
+;;Linux use multi-term
+
+(if (string= system-type "windows-nt")
+     (setq multi-term-program "sh.exe"))
+
+(defvar my-term-bind-key-alist
+ '(
+   ("<M-left>" . multi-term-prev )
+   ("<M-right>" . multi-term-next)
+   ))
+
+(setq term-bind-key-alist (append term-bind-key-alist my-term-bind-key-alist))
+
+(setq multi-term-dedicated-skip-other-window-p t)
 (defun my-create-shell ()
   "Create another shell buffer"
   (interactive)
-  (cond ((or (equal major-mode 'term-mode)
-	     (equal major-mode 'shell-mode))
+  (cond
+    ((equal major-mode 'shell-mode)
 	 (shell (generate-new-buffer-name "*shell*")))
 	((equal major-mode 'eshell-mode)
 	 (eshell t))
+	((equal major-mode 'term-mode)
+	 (multi-term))
 	(t (shell))))
 
-(defun my-term-switch-to-shell-mode ()
+(defun my-create-terminal ()
+  "Create a dedicated terminal if not exist otherwise jump to it"
   (interactive)
-  (if (equal major-mode 'term-mode)
-      (progn
-        (shell-mode)
-        (set-process-filter  (get-buffer-process (current-buffer)) 'comint-output-filter )
-        (local-set-key (kbd "C-j") 'my-term-switch-to-shell-mode)
-        (compilation-shell-minor-mode 1)
-        (comint-send-input)
-	)
-    (progn
-      (compilation-shell-minor-mode -1)
-      (font-lock-mode -1)
-      (set-process-filter  (get-buffer-process (current-buffer)) 'term-emulate-terminal)
-      (term-mode)
-      (term-char-mode)
-      (term-send-raw-string (kbd "C-l"))
-      )))
+  (if (not (eq nil current-prefix-arg))
+      (multi-term-dedicated-close)
+      (if  (multi-term-dedicated-exist-p)
+          (multi-term-dedicated-select)
+        (multi-term-dedicated-toggle ))))
+
+(define-key my-emacs-prefix-keymap (kbd "e") 'my-create-terminal)
 
 (defun my-clear-shell ()
   (interactive)
   (let ((comint-buffer-maximum-size 0))
     (comint-truncate-buffer)))
 
-;remap C-z to real shell
 (add-hook 'shell-mode-hook
 	  (lambda ()
 	    (local-set-key (kbd "<f1>") 'my-create-shell)
-	    (local-set-key (kbd "C-j") 'my-term-switch-to-shell-mode)
 	    (local-set-key (kbd "C-l") 'my-clear-shell)))
 
 (add-hook 'eshell-mode-hook
@@ -52,11 +56,7 @@
 
 (add-hook 'term-mode-hook
 	  (lambda ()
-	    (define-key term-raw-map (kbd "<f1>") 'my-create-shell)
-	    (define-key term-raw-map (kbd "C-j") 'my-term-switch-to-shell-mode)
-	    (define-key term-raw-map (kbd "C-l") (lambda ()
-						   (interactive)
-						   (term-send-raw-string (kbd "C-l"))))))
+	    (define-key term-raw-map (kbd "<f1>") 'my-create-shell)))
 
 (setq eshell-directory-name (expand-file-name "eshell" my-emacs-auto-generate))
 
