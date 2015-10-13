@@ -36,7 +36,8 @@
 		      htmlize 
 		      org 
 		      org-plus-contrib 
-		      ggtags 
+              ggtags 
+              multi-term
 		      auto-complete 
 		      auto-complete-c-headers 
 		      auto-complete-clang  
