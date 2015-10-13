@@ -52,7 +52,7 @@ This follows freedesktop standards, should work in X servers."
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
-(setq evil-emacs-state-cursor  '("black" box))
+(setq evil-emacs-state-cursor  '("yellow" box))
 (setq evil-normal-state-cursor '("purple" box))
 (setq evil-visual-state-cursor '("orange" box))
 (setq evil-insert-state-cursor '("purple" bar))
