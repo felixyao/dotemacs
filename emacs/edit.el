@@ -117,3 +117,18 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 (require 'undo-tree)
 (global-set-key [remap undo] 'undo-tree-undo)
 (global-undo-tree-mode -1)
+
+(defvar my-evil-init-state
+ '((git-commit-mode . insert)
+   (git-rebase-mode . emacs)
+   (magit-branch-manager-mode . emacs)
+   (shell-mode . emacs)
+   (eshell-mode . emacs)
+   (term-mode . emacs)
+   (gerp-mode . emacs)
+   (help-mode . emacs)
+   (dired-mode . emacs)
+  ))
+(loop for (mode . state) in my-evil-init-state
+  do (evil-set-initial-state mode state))
+

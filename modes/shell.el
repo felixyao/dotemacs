@@ -14,7 +14,14 @@
    ("<M-right>" . multi-term-next)
    ))
 
+(defvar my-term-unbind-key-alist
+ '(
+   "C-b"
+   "C-f"
+   ))
+
 (setq term-bind-key-alist (append term-bind-key-alist my-term-bind-key-alist))
+(setq term-unbind-key-list (append term-unbind-key-list my-term-unbind-key-alist))
 
 (setq multi-term-dedicated-skip-other-window-p t)
 (defun my-create-shell ()
