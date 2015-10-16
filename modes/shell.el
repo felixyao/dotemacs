@@ -56,6 +56,19 @@
    ;"C-f"
    ))
 
+(defun my-ido-eshll-history-list ()
+  (interactive)
+  (insert
+   (ido-completing-read "History Commands:"
+                        (delete-dups 
+                         (ring-elements eshell-history-ring)))))
+
+(defun eshell/s (&optional path)
+  (if (not (equal path nil))
+      (magit-status path)
+    (magit-status (eshell/pwd))))
+
+
 (setq term-bind-key-alist (append term-bind-key-alist my-term-bind-key-alist))
 (setq term-unbind-key-list (append term-unbind-key-list my-term-unbind-key-alist))
 
@@ -75,7 +88,8 @@
 
 (add-hook 'eshell-mode-hook
 	  (lambda ()
-	    (local-set-key (kbd "<f1>") 'my-create-shell)))
+        (local-set-key (kbd "<f1>") 'my-create-shell)
+	    (local-set-key (kbd "M-r") 'my-ido-eshll-history-list)))
 
 (setq eshell-directory-name (expand-file-name "eshell" my-emacs-auto-generate))
 
