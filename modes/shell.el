@@ -2,6 +2,7 @@
 (require 'shell)
 (require 'multi-term)
 (require 'term)
+(require 'eshell)
 
 ;;Windows use the normal shell
 ;;Linux use multi-term
@@ -56,6 +57,13 @@
    ;"C-f"
    ))
 
+(defvar my-eshell-term-commands
+ '(
+   "ssh"
+   "mutt"
+   ))
+
+
 (defun my-ido-eshll-history-list ()
   (interactive)
   (insert
@@ -74,6 +82,7 @@
 
 (setq multi-term-dedicated-skip-other-window-p t)
 
+
 (define-key my-emacs-prefix-keymap (kbd "e") 'my-create-terminal)
 
 (add-hook 'shell-mode-hook
@@ -88,7 +97,8 @@
 
 (add-hook 'eshell-mode-hook
 	  (lambda ()
-        (local-set-key (kbd "<f1>") 'my-create-shell)
+	    (setq eshell-visual-commands (append eshell-visual-commands  my-eshell-term-commands))
+	    (local-set-key (kbd "<f1>") 'my-create-shell)
 	    (local-set-key (kbd "M-r") 'my-ido-eshll-history-list)))
 
 (setq eshell-directory-name (expand-file-name "eshell" my-emacs-auto-generate))
