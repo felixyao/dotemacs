@@ -60,6 +60,7 @@
 (defvar my-eshell-term-commands
  '(
    "ssh"
+   "telnet"
    "mutt"
    ))
 
