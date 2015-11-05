@@ -45,6 +45,7 @@
 
 (defvar my-term-bind-key-alist
  '(
+   ("<escape>" . term-send-esc)
    ("<M-left>" . multi-term-prev )
    ("<M-right>" . multi-term-next)
    ("<f1>" . my-create-shell)
@@ -69,7 +70,7 @@
   (interactive)
   (insert
    (ido-completing-read "History Commands:"
-                        (delete-dups 
+                        (delete-dups
                          (ring-elements eshell-history-ring)))))
 
 (defun eshell/s (&optional path)
@@ -103,4 +104,3 @@
 	    (local-set-key (kbd "M-r") 'my-ido-eshll-history-list)))
 
 (setq eshell-directory-name (expand-file-name "eshell" my-emacs-auto-generate))
-
